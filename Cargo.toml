@@ -10,6 +10,8 @@ debug = false
 incremental = false
 strip = true
 lto = true
-panic = "abort"
+panic = "unwind"
 
 [dependencies]
+console_error_panic_hook = "0.1.7"
+leptos = { version = "0.7.7", features = ["csr"] }
