@@ -1,11 +1,11 @@
 ARG RUST_VERSION=1.84.1
-ARG APP_NAME=rust-be-template
+ARG APP_NAME=rust-fe-template
 
 FROM rust:${RUST_VERSION}-alpine AS build
 ARG APP_NAME
 WORKDIR /app
 
-RUN apk add --no-cache clang lld musl-dev git ca-certificates postgresql-dev upx
+RUN apk add --no-cache clang lld musl-dev ca-certificates upx
 
 RUN --mount=type=bind,source=src,target=src \
     --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
@@ -22,8 +22,6 @@ RUN --mount=type=bind,source=src,target=src \
 FROM scratch AS final
 COPY --from=build /bin/server /bin/
 
-ENV IS_AWS=true
-ENV APP_NAME_VERSION=rust-be-template-0.1.0
-ENV DB_URL=postgres://spring_learn_admin:K7ww89Sj!5@host.docker.internal/spring_learn
+ENV APP_NAME_VERSION=rust-fe-template-0.1.0
 
 CMD ["/bin/server"]
