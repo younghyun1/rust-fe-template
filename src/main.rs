@@ -1,4 +1,4 @@
-use leptos::prelude::*;
+use leptos::{prelude::*, task::spawn_local};
 
 fn main() {
     leptos::mount::mount_to_body(AppShell)
@@ -17,10 +17,10 @@ fn AppShell() -> impl IntoView {
             let client = reqwest::Client::new();
             match client.get("http://localhost:3000").send().await {
                 Ok(resp) => match resp.text().await {
-                    Ok(text) => set_response(text),
-                    Err(err) => set_response(format!("Error reading response: {}", err)),
+                    Ok(text) => set_response.set(text),
+                    Err(err) => set_response.set(format!("Error reading response: {}", err)),
                 },
-                Err(err) => set_response(format!("Request failed: {}", err)),
+                Err(err) => set_response.set(format!("Request failed: {}", err)),
             }
         });
     };
