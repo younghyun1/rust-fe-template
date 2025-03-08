@@ -42,7 +42,7 @@ pub fn TopBar() -> impl IntoView {
                                 </a>
                                 <span style=format!(
                                     "display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: {}; margin-right: 8px; margin-left: 20px",
-                                    if global_state.read().is_logged_in { "green" } else { "red" }
+                                    if global_state.read().is_logged_in { "green" } else { "red" },
                                 )></span>
                             </>
                         }
@@ -57,7 +57,7 @@ pub fn TopBar() -> impl IntoView {
                                 </a>
                                 <span style=format!(
                                     "display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: {}; margin-right: 8px; margin-left: 20px",
-                                    if global_state.read().is_logged_in { "green" } else { "red" }
+                                    if global_state.read().is_logged_in { "green" } else { "red" },
                                 )></span>
                             </>
                         }

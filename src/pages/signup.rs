@@ -28,7 +28,6 @@ pub fn Signup() -> impl IntoView {
     let global_state =
         use_context::<ReadSignal<GlobalAppState>>().expect("global_state not provided");
 
-    let client = global_state.read().client.clone();
     let backend_url: String = global_state.read().backend_url.clone();
     let api_key: String = global_state.read().api_key.clone();
 
@@ -36,7 +35,11 @@ pub fn Signup() -> impl IntoView {
         let set_countries = set_countries.clone();
         async move {
             let url = format!("{}/dropdown/country/get-all", backend_url);
-            match client.get(&url).header("x-api-key", api_key).send().await {
+            match gloo_net::http::Request::get(&url)
+                .header("x-api-key", &api_key)
+                .send()
+                .await
+            {
                 Ok(response) => {
                     match response.json::<ResponseFormat<CountryData>>().await {
                         Ok(countries_resp) => {
@@ -73,84 +76,84 @@ pub fn Signup() -> impl IntoView {
                 {r#"
                 /* The outer container fills the available viewport space minus the top bar */
                 .container {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    height: calc(100vh - 90px); /* subtract the top bar height */
-                    margin: 0;
-                    padding: 0;
-                    overflow: hidden;
-                    background: #000; /* dark background for neon effect */
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  height: calc(100vh - 90px); /* subtract the top bar height */
+                  margin: 0;
+                  padding: 0;
+                  overflow: hidden;
+                  background: #000; /* dark background for neon effect */
                 }
-
+                
                 /* The signup box: transparent background with a thick neon green border */
                 .signup-form {
-                    border: 5px solid #39FF14; /* neon green border */
-                    background: transparent;
-                    border-radius: 8px;
-                    padding: 24px;
-                    max-width: 400px;
-                    width: 100%;
-                    box-sizing: border-box;
-                    text-align: center;
+                  border: 5px solid #39FF14; /* neon green border */
+                  background: transparent;
+                  border-radius: 8px;
+                  padding: 24px;
+                  max-width: 400px;
+                  width: 100%;
+                  box-sizing: border-box;
+                  text-align: center;
                 }
-
+                
                 /* Consistent neon green styling for text elements */
                 .signup-form h2,
                 .signup-form label,
                 .signup-form input,
                 .signup-form select,
                 .signup-form button {
-                    font-family: Arial, sans-serif;
-                    color: #39FF14; /* neon green text */
+                  font-family: Arial, sans-serif;
+                  color: #39FF14; /* neon green text */
                 }
-
+                
                 .signup-form h2 {
-                    font-size: 2rem;
-                    margin-bottom: 16px;
+                  font-size: 2rem;
+                  margin-bottom: 16px;
                 }
-
+                
                 .signup-form form {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 16px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 16px;
                 }
-
+                
                 .signup-form form div {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: flex-start;
                 }
-
+                
                 .signup-form input,
                 .signup-form select {
-                    padding: 8px;
-                    border: 2px solid #39FF14;
-                    border-radius: 4px;
-                    background: transparent;
-                    width: 100%;
-                    box-sizing: border-box;
-                    color: #39FF14;
+                  padding: 8px;
+                  border: 2px solid #39FF14;
+                  border-radius: 4px;
+                  background: transparent;
+                  width: 100%;
+                  box-sizing: border-box;
+                  color: #39FF14;
                 }
-
+                
                 .signup-form input::placeholder,
                 .signup-form select::placeholder {
-                    color: #39FF14;
+                  color: #39FF14;
                 }
-
+                
                 .signup-form button {
-                    padding: 10px;
-                    border: 2px solid #39FF14;
-                    background: transparent;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: background 0.3s ease, color 0.3s ease;
+                  padding: 10px;
+                  border: 2px solid #39FF14;
+                  background: transparent;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  font-weight: bold;
+                  transition: background 0.3s ease, color 0.3s ease;
                 }
-
+                
                 .signup-form button:hover {
-                    background: #39FF14;
-                    color: #000;
+                  background: #39FF14;
+                  color: #000;
                 }
                 "#}
             </style>
@@ -170,23 +173,33 @@ pub fn Signup() -> impl IntoView {
                             <label for="user_password">"Password:"</label>
                             <input id="user_password" type="password" placeholder="Your Password" />
                         </div>
-                            <div>
-                                <label for="user_country">"Country:"</label>
-                                <select id="user_country">
-                                    <option value="">"Select Country"</option>
-                                    {move || {
-                                        // Use the current list of countries to generate options.
-                                        // Note: Make sure that IsoCountry implements a trait to get a proper display value.
-                                        countries.get().into_iter().map(|country| {
+                        <div>
+                            <label for="user_country">"Country:"</label>
+                            <select id="user_country">
+                                <option value="">"Select Country"</option>
+                                {move || {
+                                    countries
+                                        .get()
+                                        .into_iter()
+                                        .map(|country| {
+                                            // Use the current list of countries to generate options.
+                                            // Note: Make sure that IsoCountry implements a trait to get a proper display value.
                                             view! {
-                                                <option value={country.country_alpha2.clone()}>
-                                                    {format!("{} {}", country.country_flag, country.country_eng_name)}
+                                                <option value=country
+                                                    .country_alpha2
+                                                    .clone()>
+                                                    {format!(
+                                                        "{} {}",
+                                                        country.country_flag,
+                                                        country.country_eng_name,
+                                                    )}
                                                 </option>
                                             }
-                                        }).collect_view()
-                                    }}
-                                </select>
-                            </div>
+                                        })
+                                        .collect_view()
+                                }}
+                            </select>
+                        </div>
                         <div>
                             <label for="user_language">"Language:"</label>
                             <select id="user_language">
@@ -196,7 +209,9 @@ pub fn Signup() -> impl IntoView {
                         <div>
                             <label for="user_subdivision">"Subdivision:"</label>
                             <select id="user_subdivision">
-                                <option value="">"Select Subdivision (optional placeholder)"</option>
+                                <option value="">
+                                    "Select Subdivision (optional placeholder)"
+                                </option>
                             </select>
                         </div>
                         <button type="submit">"Sign Up"</button>

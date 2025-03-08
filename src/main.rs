@@ -24,7 +24,6 @@ pub mod dto {
 
 #[derive(Clone)]
 struct GlobalAppState {
-    client: reqwest::Client,
     is_logged_in: bool,
     user_id: Option<Uuid>,
     session_id: Option<Uuid>,
@@ -36,7 +35,6 @@ struct GlobalAppState {
 impl Default for GlobalAppState {
     fn default() -> Self {
         Self {
-            client: reqwest::Client::builder().build().unwrap(),
             is_logged_in: false,
             user_id: None,
             session_id: None,
@@ -55,7 +53,7 @@ fn main() {
 fn App() -> impl IntoView {
     // Create a global state signal.
     // (For testing you might set is_logged_in to true and fill in an email.)
-    let (global_state, set_global_state) = create_signal(GlobalAppState {
+    let (global_state, set_global_state) = signal(GlobalAppState {
         ..GlobalAppState::default()
     });
     provide_context(global_state);
@@ -66,11 +64,11 @@ fn App() -> impl IntoView {
             {r#"
             /* Ensure the body has no margin and add padding-top so that content isn’t hidden behind the fixed top bar */
             body {
-             background-color: black;
-             color: white;
-             margin: 0;
-             padding-top: 90px;
-             font-family: sans-serif;
+            background-color: black;
+            color: white;
+            margin: 0;
+            padding-top: 90px;
+            font-family: sans-serif;
             }
             "#}
         </style>

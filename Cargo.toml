@@ -26,7 +26,7 @@ uuid = { version = "1.15.1", features = ["v4", "zerocopy", "serde", "js"] }
 chrono = { version = "0.4.40", features = ["serde"] }
 
 # http request client
-reqwest = { version = "0.12.12", features = ["json"] }
+gloo-net = "0.6.0"
 
 # serialization/deserialization
 serde = "1.0.218"
