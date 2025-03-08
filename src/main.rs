@@ -1,94 +1,97 @@
-use chrono::{DateTime, Utc};
-use leptos::{prelude::*, task::spawn_local};
-use std::time::Instant;
+use components::top_bar::TopBar;
+use leptos::prelude::*;
+use leptos_router::components::*;
+use leptos_router::path;
 
-fn main() {
-    leptos::mount::mount_to_body(AppShell)
+use pages::about::About;
+use pages::home::Home;
+use pages::signup::Signup;
+use pages::works::Works;
+use uuid::Uuid;
+
+pub mod components {
+    pub mod top_bar;
 }
-
-#[derive(Clone, serde_derive::Deserialize)]
-pub struct RootHandlerResponse {
-    timestamp: DateTime<Utc>,
-    server_uptime: String, // TODO: ISO-compliance
-    responses_handled: u64,
-    db_version: String,
-    db_latency: String,
+pub mod pages {
+    pub mod about;
+    pub mod home;
+    pub mod signup;
+    pub mod works;
 }
-
-#[derive(Clone, serde_derive::Deserialize)]
-pub struct Meta {
-    time_to_process: String,
-    timestamp: DateTime<Utc>,
-    metadata: Option<String>,
-}
-
-#[derive(Clone, serde_derive::Deserialize)]
-pub struct Response {
-    success: bool,
-    data: RootHandlerResponse,
-    meta: Meta,
+pub mod dto {
+    pub mod api_response;
 }
 
 #[derive(Clone)]
-struct AppState {
-    pub logged_in: bool,
-    pub request_client: reqwest::Client,
+struct GlobalAppState {
+    client: reqwest::Client,
+    is_logged_in: bool,
+    user_id: Option<Uuid>,
+    session_id: Option<Uuid>,
+    email: Option<String>,
+    backend_url: String,
+    api_key: String,
 }
 
-impl AppState {
-    pub fn get_client(&self) -> &reqwest::Client {
-        &self.request_client
+impl Default for GlobalAppState {
+    fn default() -> Self {
+        Self {
+            client: reqwest::Client::builder().build().unwrap(),
+            is_logged_in: false,
+            user_id: None,
+            session_id: None,
+            email: None,
+            backend_url: String::from("http://localhost:3000"),
+            api_key: String::from("5f706c3c-5651-4d76-94a7-b999067b66aa"),
+        }
     }
 }
 
+fn main() {
+    leptos::mount::mount_to_body(App)
+}
+
 #[component]
-fn AppShell() -> impl IntoView {
-    let (state, _set_state) = signal(AppState {
-        logged_in: false,
-        request_client: reqwest::Client::new(),
+fn App() -> impl IntoView {
+    // Create a global state signal.
+    // (For testing you might set is_logged_in to true and fill in an email.)
+    let (global_state, set_global_state) = create_signal(GlobalAppState {
+        ..GlobalAppState::default()
     });
-    let (response, set_response) = signal::<Option<Response>>(None);
-    let on_click = move |_| {
-        let start_time = web_time::Instant::now();
-        spawn_local(async move {
-            let state = state.get();
-            let client = state.get_client();
-            match client.get("http://localhost:3000").send().await {
-                Ok(resp) => match resp.json::<Response>().await {
-                    Ok(data) => set_response.set(Some(data)),
-                    Err(_err) => set_response.set(None),
-                },
-                Err(_) => set_response.set(None),
-            }
-            let elapsed = start_time.elapsed();
-            leptos::logging::log!("Fetch took: {:?}", elapsed);
-        });
-    };
+    provide_context(global_state);
+    provide_context(set_global_state);
 
     view! {
-        <div style="background:black; color:white;">
-            <TitleBar />
-            <div>
-                <button on:click=on_click>"Fetch Data"</button>
-            </div>
-            <div>{
-                move || {
-                    if let Some(ref response) = response.get() {
-                        let data = &response.data;
-                        format!(
-                            "Timestamp: {}\nServer Uptime: {}\nResponses Handled: {}\nDB Version: {}\nDB Latency: {}",
-                            data.timestamp, data.server_uptime, data.responses_handled, data.db_version, data.db_latency
-                        )
-                    } else {
-                        "Error fetching data or parsing response.".to_string()
-                    }
-                }
-            }</div>
-        </div>
-    }
-}
+        <style>
+            {r#"
+            /* Ensure the body has no margin and add padding-top so that content isn’t hidden behind the fixed top bar */
+            body {
+             background-color: black;
+             color: white;
+             margin: 0;
+             padding-top: 90px;
+             font-family: sans-serif;
+            }
+            "#}
+        </style>
 
-#[component]
-fn TitleBar() -> impl IntoView {
-    view! { <div style="font-size: 24px; font-weight: bold;">"Rust Full-Stack Test"</div> }
+        <Router>
+            <TopBar />
+
+            <Routes fallback=|| {
+                view! {
+                    <div>
+                        <h1>"404 - Page Not Found"</h1>
+                        <p>"We're sorry, but the page you were looking for doesn't exist."</p>
+                        <a href=path!("")>"Return Home"</a>
+                    </div>
+                }
+            }>
+                <Route path=path!("") view=Home />
+                <Route path=path!("about") view=About />
+                <Route path=path!("works") view=Works />
+                <Route path=path!("/account/signup") view=Signup />
+            </Routes>
+        </Router>
+    }
 }
