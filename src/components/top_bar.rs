@@ -31,35 +31,9 @@ pub fn TopBar() -> impl IntoView {
 
                 <div class="user-profile" style="display: flex; align-items: center;">
                     {if global_state.read().is_logged_in {
-                        view! {
-                            <>
-                                <a
-                                    href="/account/settings"
-                                    style="text-decoration: none; color: white;"
-                                >
-                                    <span style="font-size: 24px;">"👤"</span>
-                                </a>
-                                <span style=format!(
-                                    "display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: {}; margin-right: 8px; margin-left: 20px",
-                                    if global_state.read().is_logged_in { "green" } else { "red" },
-                                )></span>
-                            </>
-                        }
+                        view! { <LoggedInUserProfile /> }.into_any()
                     } else {
-                        view! {
-                            <>
-                                <a
-                                    href="/account/signup"
-                                    style="text-decoration: none; color: white; border: 1px solid white; padding: 4px 8px; border-radius: 4px;"
-                                >
-                                    <div>"Sign Up"</div>
-                                </a>
-                                <span style=format!(
-                                    "display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: {}; margin-right: 8px; margin-left: 20px",
-                                    if global_state.read().is_logged_in { "green" } else { "red" },
-                                )></span>
-                            </>
-                        }
+                        view! { <LoggedOutUserProfile /> }.into_any()
                     }}
                 </div>
             </div>
@@ -84,5 +58,44 @@ pub fn TopBar() -> impl IntoView {
                 </ul>
             </nav>
         </header>
+    }
+}
+
+#[component]
+pub fn LoggedInUserProfile() -> impl IntoView {
+    view! {
+        <>
+            <a href="/account/settings" style="text-decoration: none; color: white;">
+                <span style="font-size: 24px;">"👤"</span>
+            </a>
+            <span style="display: inline-block; width: 12px; height: 12px;
+             border-radius: 50%; background-color: green;
+             margin-right: 8px; margin-left: 20px;"></span>
+        </>
+    }
+}
+
+#[component]
+pub fn LoggedOutUserProfile() -> impl IntoView {
+    view! {
+        <>
+            <a
+                href="/account/login"
+                style="text-decoration: none; color: white; border: 1px solid white;
+                 padding: 4px 8px; border-radius: 4px;"
+            >
+                <div>"Login"</div>
+            </a>
+            <a
+                href="/account/signup"
+                style="text-decoration: none; color: white; border: 1px solid white;
+                 padding: 4px 8px; border-radius: 4px; margin-left: 20px;"
+            >
+                <div>"Sign Up"</div>
+            </a>
+            <span style="display: inline-block; width: 12px; height: 12px;
+             border-radius: 50%; background-color: red;
+             margin-right: 8px; margin-left: 20px;"></span>
+        </>
     }
 }

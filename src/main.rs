@@ -3,24 +3,33 @@ use leptos::prelude::*;
 use leptos_router::components::*;
 use leptos_router::path;
 
-use pages::about::About;
-use pages::home::Home;
+use pages::about::about::About;
+use pages::home::home::Home;
 use pages::signup::signup::Signup;
 use pages::signup::signup_complete::SignupComplete;
-use pages::works::Works;
+use pages::works::works::Works;
 use uuid::Uuid;
 
 pub mod components {
     pub mod top_bar;
 }
 pub mod pages {
-    pub mod about;
-    pub mod home;
+    pub mod about {
+        pub mod about;
+    }
+    pub mod home {
+        pub mod home;
+    }
+    pub mod login {
+        pub mod login;
+    }
     pub mod signup {
         pub mod signup;
         pub mod signup_complete;
     }
-    pub mod works;
+    pub mod works {
+        pub mod works;
+    }
 }
 pub mod dto {
     pub mod api_response;
