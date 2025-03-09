@@ -5,7 +5,7 @@ use leptos_router::path;
 
 use pages::about::About;
 use pages::home::Home;
-use pages::signup::Signup;
+use pages::signup::signup::Signup;
 use pages::works::Works;
 use uuid::Uuid;
 
@@ -15,7 +15,9 @@ pub mod components {
 pub mod pages {
     pub mod about;
     pub mod home;
-    pub mod signup;
+    pub mod signup {
+        pub mod signup;
+    }
     pub mod works;
 }
 pub mod dto {

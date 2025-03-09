@@ -1,0 +1,84 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 90px); /* subtract the top bar height */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #121212; /* dark background for the overall page */
+}
+
+/* The signup box: a more subtle design for dark mode */
+.signup-form {
+    border: 1px solid #333; /* a muted border */
+    background: #1e1e1e; /* dark, slightly lighter than the background */
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Consistent typography and colors for dark mode */
+.signup-form h2,
+.signup-form label,
+.signup-form input,
+.signup-form select,
+.signup-form button {
+    font-family: Arial, sans-serif;
+    color: #ccc; /* light grey text */
+}
+
+.signup-form h2 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+
+.signup-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.signup-form form div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.signup-form input,
+.signup-form select {
+    padding: 8px;
+    border: 1px solid #555; /* subtle border for inputs */
+    border-radius: 4px;
+    background: #2c2c2c; /* dark input background */
+    width: 100%;
+    box-sizing: border-box;
+    color: #ccc;
+}
+
+.signup-form input::placeholder,
+.signup-form select::placeholder {
+    color: #777;
+}
+
+.signup-form button {
+    padding: 10px;
+    border: 1px solid #555;
+    background: #2c2c2c;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition:
+        background 0.3s ease,
+        color 0.3s ease;
+    color: #ccc;
+}
+
+.signup-form button:hover {
+    background: #555;
+    color: #fff;
+}
