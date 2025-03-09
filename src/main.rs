@@ -6,6 +6,7 @@ use leptos_router::path;
 use pages::about::About;
 use pages::home::Home;
 use pages::signup::signup::Signup;
+use pages::signup::signup_complete::SignupComplete;
 use pages::works::Works;
 use uuid::Uuid;
 
@@ -17,6 +18,7 @@ pub mod pages {
     pub mod home;
     pub mod signup {
         pub mod signup;
+        pub mod signup_complete;
     }
     pub mod works;
 }
@@ -91,6 +93,7 @@ fn App() -> impl IntoView {
                 <Route path=path!("about") view=About />
                 <Route path=path!("works") view=Works />
                 <Route path=path!("/account/signup") view=Signup />
+                <Route path=path!("/account/signup-complete") view=SignupComplete />
             </Routes>
         </Router>
     }

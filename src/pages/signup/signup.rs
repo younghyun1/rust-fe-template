@@ -1,11 +1,12 @@
 use leptos::{logging::log, prelude::*, task::spawn_local};
 use leptos_router::hooks::use_navigate;
+use urlencoding::encode;
 use web_sys::wasm_bindgen::JsCast;
 
 use crate::{dto::api_response::ResponseFormat, GlobalAppState};
 
 /// The signup form style extracted as a constant for improved readability.
-const SIGNUP_STYLE: &str = include_str!("./signup.css");
+pub const SIGNUP_STYLE: &str = include_str!("./signup.css");
 
 /// Country and subdivision types
 #[derive(Clone, Debug, serde::Deserialize)]
@@ -149,10 +150,6 @@ pub fn Signup() -> impl IntoView {
         }
     });
 
-    // Create a callback to handle country selection changes.
-    let backend_url_ocs = backend_url.clone();
-    let api_key_ocs = api_key.clone();
-
     let on_subdivision_change = {
         let set_request_state = set_request_state.clone();
         move |ev: web_sys::Event| {
@@ -280,18 +277,13 @@ pub fn Signup() -> impl IntoView {
     };
 
     // Define the on_submit handler
-    let request_state_for_on_submit = request_state.clone();
     let backend_url_for_on_submit = backend_url.clone();
     let api_key_for_on_submit = api_key.clone();
     let navigate_for_on_submit = navigate.clone();
 
     let on_submit = {
         let request_state = request_state.clone();
-        let backend_url = backend_url.clone();
-        let api_key = api_key.clone();
-        let navigate = navigate.clone();
         move |ev: leptos::ev::SubmitEvent| {
-            let request_state_for_on_submit = request_state_for_on_submit.clone();
             let backend_url_for_on_submit = backend_url_for_on_submit.clone();
             let api_key_for_on_submit = api_key_for_on_submit.clone();
             let navigate_for_on_submit = navigate_for_on_submit.clone();
@@ -310,8 +302,23 @@ pub fn Signup() -> impl IntoView {
                         Ok(resp) => {
                             if resp.success {
                                 log!("Signup Response: {:?}", resp.data);
+
+                                // Extract the values to pass as query params:
+                                let user_name = &resp.data.user_name;
+                                let user_email = &resp.data.user_email;
+                                let expiry_time = &resp.data.verify_by;
+
+                                // Build the query string, encoding values in case they contain characters
+                                let query_params = format!(
+                                    "?user_name={}&user_email={}&expiry_time={}",
+                                    encode(user_name),
+                                    encode(user_email),
+                                    encode(expiry_time)
+                                );
+
+                                // Navigate to the signup-complete route with query parameters.
                                 navigate_for_on_submit(
-                                    "/account/signup-complete",
+                                    &format!("/account/signup-complete{}", query_params),
                                     Default::default(),
                                 );
                             } else {
@@ -339,7 +346,8 @@ pub fn Signup() -> impl IntoView {
                                 id="user_name"
                                 type="text"
                                 placeholder="Your Name"
-                                on:input=on_name_input />
+                                on:input=on_name_input
+                            />
                         </div>
                         <div>
                             <label for="user_email">"Email*:"</label>
@@ -347,7 +355,8 @@ pub fn Signup() -> impl IntoView {
                                 id="user_email"
                                 type="email"
                                 placeholder="Your Email"
-                                on:input=on_email_input />
+                                on:input=on_email_input
+                            />
                         </div>
                         <div>
                             <label for="user_password">"Password*:"</label>
@@ -355,7 +364,8 @@ pub fn Signup() -> impl IntoView {
                                 id="user_password"
                                 type="password"
                                 placeholder="Your Password"
-                                on:input=on_password_input />
+                                on:input=on_password_input
+                            />
                         </div>
                         <div>
                             <label for="user_country">"Country*:"</label>
@@ -367,8 +377,14 @@ pub fn Signup() -> impl IntoView {
                                         .into_iter()
                                         .map(|country| {
                                             view! {
-                                                <option value=country.country_code.to_string()>
-                                                    {format!("{} {}", country.country_flag, country.country_eng_name)}
+                                                <option value=country
+                                                    .country_code
+                                                    .to_string()>
+                                                    {format!(
+                                                        "{} {}",
+                                                        country.country_flag,
+                                                        country.country_eng_name,
+                                                    )}
                                                 </option>
                                             }
                                         })
@@ -378,9 +394,7 @@ pub fn Signup() -> impl IntoView {
                         </div>
                         <div>
                             <label for="user_subdivision">"Subdivision:"</label>
-                            <select
-                                id="user_subdivision"
-                                on:change=on_subdivision_change>
+                            <select id="user_subdivision" on:change=on_subdivision_change>
                                 <option value="">"Select Subdivision"</option>
                                 {move || {
                                     subdivisions
@@ -388,9 +402,9 @@ pub fn Signup() -> impl IntoView {
                                         .into_iter()
                                         .map(|subdivision| {
                                             view! {
-                                                <option value=subdivision.subdivision_id.to_string()>
-                                                    {subdivision.subdivision_name.clone()}
-                                                </option>
+                                                <option value=subdivision
+                                                    .subdivision_id
+                                                    .to_string()>{subdivision.subdivision_name.clone()}</option>
                                             }
                                         })
                                         .collect_view()
@@ -399,9 +413,7 @@ pub fn Signup() -> impl IntoView {
                         </div>
                         <div>
                             <label for="user_language">"Language*:"</label>
-                            <select
-                                id="user_language"
-                                on:change=on_language_change>
+                            <select id="user_language" on:change=on_language_change>
                                 <option value="">"Select Language"</option>
                                 {move || {
                                     languages
@@ -409,9 +421,9 @@ pub fn Signup() -> impl IntoView {
                                         .into_iter()
                                         .map(|lang| {
                                             view! {
-                                                <option value=lang.language_code.to_string()>
-                                                    {lang.language_eng_name.clone()}
-                                                </option>
+                                                <option value=lang
+                                                    .language_code
+                                                    .to_string()>{lang.language_eng_name.clone()}</option>
                                             }
                                         })
                                         .collect_view()

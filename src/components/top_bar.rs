@@ -1,5 +1,4 @@
 use leptos::prelude::*;
-use uuid::Uuid;
 
 use crate::GlobalAppState;
 
