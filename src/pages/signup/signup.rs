@@ -83,8 +83,8 @@ pub fn Signup() -> impl IntoView {
     let navigate = use_navigate();
 
     // Wrap backend_url and api_key in Rc so they can be cloned into multiple closures.
-    let backend_url = std::rc::Rc::new(global_state.read().backend_url.clone());
-    let api_key = std::rc::Rc::new(global_state.read().api_key.clone());
+    let backend_url = std::rc::Rc::new(global_state.get().backend_url.clone());
+    let api_key = std::rc::Rc::new(global_state.get().api_key.clone());
 
     // Initially fetch the list of countries.
     spawn_local({
