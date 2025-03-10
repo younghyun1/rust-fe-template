@@ -89,11 +89,11 @@ fn App() -> impl IntoView {
             {r#"
             /* Ensure the body has no margin and add padding-top so that content isn’t hidden behind the fixed top bar */
             body {
-               background-color: black;
-               color: white;
-               margin: 0;
-               padding-top: 90px;
-               font-family: sans-serif;
+              background-color: black;
+              color: white;
+              margin: 0;
+              padding-top: 90px;
+              font-family: sans-serif;
             }
             "#}
         </style>
