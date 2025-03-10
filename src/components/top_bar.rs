@@ -33,13 +33,19 @@ pub fn TopBar() -> impl IntoView {
             <nav class="bottom-nav" style="background-color: #333; padding: 8px 15px;">
                 <ul style="list-style: none; display: flex; gap: 15px; margin: 0; padding: 0;">
                     <li>
-                        <a href="/" style="text-decoration: none; color: white;">"Home"</a>
+                        <a href="/" style="text-decoration: none; color: white;">
+                            "Home"
+                        </a>
                     </li>
                     <li>
-                        <a href="/about" style="text-decoration: none; color: white;">"About"</a>
+                        <a href="/about" style="text-decoration: none; color: white;">
+                            "About"
+                        </a>
                     </li>
                     <li>
-                        <a href="/works" style="text-decoration: none; color: white;">"Works"</a>
+                        <a href="/works" style="text-decoration: none; color: white;">
+                            "Works"
+                        </a>
                     </li>
                 </ul>
             </nav>

@@ -101,12 +101,13 @@ pub fn Signup() -> impl IntoView {
                 Ok(response) => match response.json::<ResponseFormat<CountryData>>().await {
                     Ok(countries_resp) => {
                         if countries_resp.success {
+                            let data = countries_resp.data.unwrap();
                             log!(
                                 "Fetched {} countries successfully. Meta: {:?}",
-                                countries_resp.data.countries.len(),
+                                data.countries.len(),
                                 countries_resp.meta
                             );
-                            set_countries.set(countries_resp.data.countries);
+                            set_countries.set(data.countries);
                         } else {
                             log!("Server failure fetching countries: {:?}", countries_resp);
                         }
@@ -133,12 +134,13 @@ pub fn Signup() -> impl IntoView {
                 Ok(response) => match response.json::<ResponseFormat<Vec<IsoLanguage>>>().await {
                     Ok(languages_resp) => {
                         if languages_resp.success {
+                            let data = languages_resp.data.unwrap();
                             log!(
                                 "Fetched {} languages successfully. Meta: {:?}",
-                                languages_resp.data.len(),
+                                data.len(),
                                 languages_resp.meta
                             );
-                            set_languages.set(languages_resp.data);
+                            set_languages.set(data);
                         } else {
                             log!("Server failure fetching languages: {:?}", languages_resp);
                         }
@@ -251,12 +253,13 @@ pub fn Signup() -> impl IntoView {
                             match response.json::<ResponseFormat<Vec<Subdivision>>>().await {
                                 Ok(sub_div_resp) => {
                                     if sub_div_resp.success {
+                                        let data = sub_div_resp.data.unwrap();
                                         log!(
                                             "Fetched {} subdivisions successfully. Meta: {:?}",
-                                            sub_div_resp.data.len(),
+                                            data.len(),
                                             sub_div_resp.meta
                                         );
-                                        set_subdivisions.set(sub_div_resp.data);
+                                        set_subdivisions.set(data);
                                     } else {
                                         log!(
                                             "Server failure fetching subdivisions: {:?}",
@@ -303,10 +306,12 @@ pub fn Signup() -> impl IntoView {
                             if resp.success {
                                 log!("Signup Response: {:?}", resp.data);
 
+                                let data = &resp.data.unwrap();
+
                                 // Extract the values to pass as query params:
-                                let user_name = &resp.data.user_name;
-                                let user_email = &resp.data.user_email;
-                                let expiry_time = &resp.data.verify_by;
+                                let user_name = &data.user_name;
+                                let user_email = &data.user_email;
+                                let expiry_time = &data.verify_by;
 
                                 // Build the query string, encoding values in case they contain characters
                                 let query_params = format!(

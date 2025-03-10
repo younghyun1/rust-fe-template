@@ -2,8 +2,10 @@
 #[serde(bound(deserialize = "T: serde::de::DeserializeOwned + std::fmt::Debug"))]
 pub struct ResponseFormat<T: serde::de::DeserializeOwned + std::fmt::Debug> {
     pub success: bool,
-    pub data: T,
-    pub meta: Meta,
+    pub data: Option<T>,
+    pub meta: Option<Meta>,
+    pub error_code: Option<u32>,
+    pub message: Option<String>,
 }
 
 #[derive(Clone, serde::Deserialize, Debug)]

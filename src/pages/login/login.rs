@@ -54,9 +54,12 @@ pub fn Login() -> impl IntoView {
         }
     };
 
-    // Update password in the login state.
+    let (pw_error, set_pw_error) = signal(false);
+
+    // Clear error state on input.
     let on_password_input = {
         let set_login_state = set_login_state.clone();
+        let set_pw_error = set_pw_error.clone();
         move |ev: web_sys::Event| {
             if let Some(input) = ev
                 .target()
@@ -64,17 +67,18 @@ pub fn Login() -> impl IntoView {
             {
                 let pwd = input.value();
                 set_login_state.update(|state| state.user_password = pwd);
+                set_pw_error.set(false);
             }
         }
     };
 
-    // Handle form submission.
     let on_submit = {
         let login_state = login_state.clone();
         let backend_url = backend_url.clone();
         let api_key = api_key.clone();
         let global_state_set = global_state_set.clone();
         let navigate = navigate.clone();
+        let set_pw_error = set_pw_error.clone();
         move |ev: leptos::ev::SubmitEvent| {
             ev.prevent_default();
             let login_data = login_state.get();
@@ -82,6 +86,7 @@ pub fn Login() -> impl IntoView {
             let api_key = api_key.clone();
             let global_state_set = global_state_set.clone();
             let navigate = navigate.clone();
+            let set_pw_error = set_pw_error.clone();
             spawn_local(async move {
                 let url = format!("{}/auth/login", backend_url.as_ref());
                 let req = gloo_net::http::Request::post(&url)
@@ -95,24 +100,28 @@ pub fn Login() -> impl IntoView {
                     Ok(response) => match response.json::<ResponseFormat<LoginResponse>>().await {
                         Ok(resp) => {
                             if resp.success {
-                                // Update global state with the received user_id and email.
                                 global_state_set.update(|state| {
-                                    state.user_id = Some(resp.data.user_id);
+                                    state.user_id = Some(resp.data.unwrap().user_id);
                                     state.email = Some(login_data.user_email.clone());
                                     state.is_logged_in = true;
                                 });
-                                // The create_effect in App (in main.rs) will persist these changes.
                                 log!("Login successful: {:?}", global_state.get());
-
-                                // Navigate to the home page after login.
                                 navigate("/", Default::default());
                             } else {
-                                log!("Login failed at backend: {:?}", resp);
+                                log!("Backend returned error: {:?}", resp);
+                                if let Some(code) = resp.error_code {
+                                    log!("Received error code: {}", code);
+                                    if code == 15 {
+                                        set_pw_error.set(true);
+                                        log!("Set pw_error = true");
+                                    }
+                                }
+                                log!("Login failed: {:?}", resp);
                             }
                         }
-                        Err(err) => log!("Error parsing login response JSON: {:?}", err),
+                        Err(err) => log!("Error parsing JSON: {:?}", err),
                     },
-                    Err(err) => log!("Error sending login request: {:?}", err),
+                    Err(err) => log!("Error sending request: {:?}", err),
                 }
             });
         }
@@ -141,6 +150,7 @@ pub fn Login() -> impl IntoView {
                                 type="password"
                                 placeholder="Your Password"
                                 on:input=on_password_input
+                                class:input-error=move || pw_error.get()
                             />
                         </div>
                         <button type="submit">"Log In"</button>

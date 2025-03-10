@@ -56,7 +56,7 @@ impl Default for GlobalAppState {
             session_id: None,
             email: None,
             backend_url: String::from("http://localhost:3000"),
-            api_key: String::from("5f706c3c-5651-4d76-94a7-b999067b66aa"),
+            api_key: String::from("45bb0239-8e56-4600-adc9-763795430e0a"),
         }
     }
 }
@@ -87,15 +87,15 @@ fn App() -> impl IntoView {
     view! {
         <style>
             {r#"
-              /* Ensure the body has no margin and add padding-top so that content isn’t hidden behind the fixed top bar */
-              body {
-                  background-color: black;
-                  color: white;
-                  margin: 0;
-                  padding-top: 90px;
-                  font-family: sans-serif;
-              }
-              "#}
+            /* Ensure the body has no margin and add padding-top so that content isn’t hidden behind the fixed top bar */
+            body {
+               background-color: black;
+               color: white;
+               margin: 0;
+               padding-top: 90px;
+               font-family: sans-serif;
+            }
+            "#}
         </style>
 
         <Router>

@@ -76,3 +76,17 @@
     background: #555;
     color: #fff;
 }
+
+.input-error {
+    animation: error-glow 0.5s 1;
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.7);
+}
+
+@keyframes error-glow {
+    0%, 100% {
+        box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.5);
+    }
+}
