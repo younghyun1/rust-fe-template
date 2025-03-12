@@ -92,7 +92,7 @@ pub fn Signup() -> impl IntoView {
         let backend_url = backend_url.clone();
         let api_key = api_key.clone();
         async move {
-            let url = format!("{}/dropdown/country/get-all", backend_url.as_ref());
+            let url = format!("{}/dropdown/country", backend_url.as_ref());
             match gloo_net::http::Request::get(&url)
                 .header("x-api-key", api_key.as_ref())
                 .send()
@@ -124,7 +124,7 @@ pub fn Signup() -> impl IntoView {
         let backend_url = backend_url.clone();
         let api_key = api_key.clone();
         async move {
-            let url = format!("{}/dropdown/language/get-all", backend_url.as_ref());
+            let url = format!("{}/dropdown/language", backend_url.as_ref());
             match gloo_net::http::Request::get(&url)
                 .header("x-api-key", api_key.as_ref())
                 .send()
@@ -239,7 +239,7 @@ pub fn Signup() -> impl IntoView {
 
                 spawn_local(async move {
                     let url = format!(
-                        "{}/dropdown/country/subdivision?country_id={}",
+                        "{}/dropdown/country/{}/subdivision",
                         backend_url_for_country_change, country_val
                     );
                     match gloo_net::http::Request::get(&url)
