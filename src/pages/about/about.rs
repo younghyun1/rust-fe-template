@@ -2,7 +2,6 @@ use leptos::prelude::*;
 
 #[component]
 pub fn About() -> impl IntoView {
-    
     view! {
         <main>
             <h1>"About Page"</h1>
