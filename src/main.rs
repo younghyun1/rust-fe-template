@@ -55,13 +55,8 @@ impl Default for GlobalAppState {
             user_id: None,
             session_id: None,
             email: None,
-<<<<<<< HEAD
-            backend_url: String::from("https://cyhdev.com/api"),
-            api_key: String::from("5f706c3c-5651-4d76-94a7-b999067b66aa"),
-=======
             backend_url: String::from("http://localhost:3000"),
             api_key: String::from("45bb0239-8e56-4600-adc9-763795430e0a"),
->>>>>>> 068e380 (TODOs)
         }
     }
 }
