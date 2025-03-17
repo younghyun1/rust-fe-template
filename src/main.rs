@@ -9,6 +9,7 @@ use pages::home::home::Home;
 use pages::login::login::Login;
 use pages::signup::signup::Signup;
 use pages::signup::signup_complete::SignupComplete;
+use pages::validate_email::validate_email::ValidateEmail;
 use pages::works::works::Works;
 use uuid::Uuid;
 
@@ -31,6 +32,9 @@ pub mod pages {
     }
     pub mod works {
         pub mod works;
+    }
+    pub mod validate_email {
+        pub mod validate_email;
     }
 }
 pub mod dto {
@@ -114,6 +118,7 @@ fn App() -> impl IntoView {
                 <Route path=path!("about") view=About />
                 <Route path=path!("works") view=Works />
                 <Route path=path!("/account/signup") view=Signup />
+                <Route path=path!("/account/signup/validate-email") view=ValidateEmail/>
                 <Route path=path!("/account/signup-complete") view=SignupComplete />
                 <Route path=path!("/account/login") view=Login />
             </Routes>
