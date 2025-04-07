@@ -6,10 +6,6 @@ use crate::GlobalAppState;
 
 #[component]
 pub fn TopBar() -> impl IntoView {
-    // Grab global state from context.
-    let global_state =
-        use_context::<ReadSignal<GlobalAppState>>().expect("global_state not provided");
-
     // Styling for a fixed top header.
     let header_style = "background-color: #222; width: 100%; position: fixed; top: 0; left: 0; padding: 0; margin: 0; font-family: sans-serif;";
 
@@ -86,7 +82,7 @@ pub fn LoggedInUserProfile() -> impl IntoView {
                     .header("x-api-key", api_key.as_ref())
                     .send()
                     .await;
-                
+
                 match response {
                     Ok(res) => {
                         if res.ok() {

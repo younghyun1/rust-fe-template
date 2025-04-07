@@ -81,7 +81,7 @@ fn App() -> impl IntoView {
     provide_context(set_global_state);
 
     // Whenever the state changes, persist it automatically.
-    create_effect({
+    Effect::new({
         let global_state = global_state.clone();
         move |_| {
             let _ = LocalStorage::set("global_state", &global_state.get());
@@ -91,7 +91,6 @@ fn App() -> impl IntoView {
     view! {
         <style>
             {r#"
-            /* Ensure the body has no margin and add padding-top so that content isn’t hidden behind the fixed top bar */
             body {
                 background-color: black;
                 color: white;
@@ -114,9 +113,9 @@ fn App() -> impl IntoView {
                     </div>
                 }
             }>
-                <Route path=path!("") view=Home />
-                <Route path=path!("about") view=About />
-                <Route path=path!("works") view=Works />
+                <Route path=path!("/") view=Home />
+                <Route path=path!("/about") view=About />
+                <Route path=path!("/works") view=Works />
                 <Route path=path!("/account/signup") view=Signup />
                 <Route path=path!("/account/signup/validate-email") view=ValidateEmail/>
                 <Route path=path!("/account/signup-complete") view=SignupComplete />
