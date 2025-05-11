@@ -14,16 +14,16 @@ panic = "abort"
 
 [dependencies]
 # leptos (csr framework)
-leptos = { version = "0.7.7", features = ["csr"] }
-leptos_router = "0.7.7"
+leptos = { version = "0.8.2", features = ["csr"] }
+leptos_router = "0.8.2"
 
 # wasm
 web-time = "1.1.0"
 console_error_panic_hook = "0.1.7"
 
 # types
-uuid = { version = "1.15.1", features = ["v4", "zerocopy", "serde", "js"] }
-chrono = { version = "0.4.40", features = ["serde"] }
+uuid = { version = "1.16.0", features = ["v4", "zerocopy", "serde", "js"] }
+chrono = { version = "0.4.41", features = ["serde"] }
 
 # http request client
 gloo-net = "0.6.0"
